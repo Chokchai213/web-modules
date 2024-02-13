@@ -4,7 +4,7 @@ import { signInWithGoogle, singInWithFacebook } from '../services/firebase';
 import EmailFormTextExample from './email_form_text';
 import PasswordFormTextExample from './pw_form_text';
 import GoogleButton from 'react-google-button';
-import FacebookLogin from 'react-facebook-login';
+// import FacebookLogin from 'react-facebook-login';
 import './SignUpModal.css';
 function SignUpModal({ show, setShow }) {
     const handleClose = () => setShow(false);
@@ -26,7 +26,7 @@ function SignUpModal({ show, setShow }) {
             </div>
             <br></br>
             <div class='btn-wrapper'>
-                <FacebookLogin
+                {/* <FacebookLogin
                     onClick={singInWithFacebook}
                     appId='1292285361653293'
                     autoLoad={true}
@@ -34,7 +34,7 @@ function SignUpModal({ show, setShow }) {
                     icon="fa-facebook"
                     cssClass="fb-btn"
                 >
-                </FacebookLogin>
+                </FacebookLogin> */}
             </div>
             <Modal.Footer>
                 <Button variant="primary" onClick={handleClose}>
