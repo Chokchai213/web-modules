@@ -103,21 +103,19 @@ export const Dashboard = () => {
     return (
         <React.Fragment>
             <Navigate />
-            <Grid container marginTop={2} >
-                <Grid>
+            <Grid container width={"full"}>
+                <Grid >
                     <PieChartComponent
                         userData={userData}
                     />
                 </Grid>
-                <Grid>
+                <Grid >
                     <MonthDataTable
                         userData={userData}
                         setUserData={setUserData}
                     />
                 </Grid>
             </Grid>
-
-
         </React.Fragment>
     );
 };
