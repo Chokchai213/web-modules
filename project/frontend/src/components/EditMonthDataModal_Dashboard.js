@@ -115,36 +115,52 @@ const taxableIncome = [
 
 const expenseType = [
     {
-        name: "รายจ่าย tmp 1",
+        name: "อาหาร",
         category: 1,
+        color: "#95c2dc",
+        index: 1
     },
     {
-        name: "รายจ่าย tmp 2",
+        name: "ที่พักอาศัย",
         category: 2,
+        color: "#ec843e",
+        index: 2
     },
     {
-        name: "รายจ่าย tmp 3",
+        name: "สิ่งบันเทิง",
         category: 3,
+        color: "#e7dc8c",
+        index: 3
     },
     {
-        name: "รายจ่าย tmp 4",
+        name: "ท่องเที่ยว",
         category: 4,
+        color: "#84ceb9",
+        index: 4
     },
     {
-        name: "รายจ่าย tmp 5",
+        name: "การศึกษา",
         category: 5,
+        color: "#6681a5",
+        index: 5
     },
     {
-        name: "รายจ่าย tmp 6",
+        name: "ค่าเดินทาง",
         category: 6,
+        color: "#fb7d7e",
+        index: 6
     },
     {
-        name: "รายจ่าย tmp 7",
+        name: "ค่าใช้จ่ายจิปาถะ",
         category: 7,
+        color: "#485ea1",
+        index: 7
     },
     {
         name: "อื่นๆ",
         category: 8,
+        color: "#b7f1a5",
+        index: 8
     },
 ];
 
@@ -292,7 +308,7 @@ const EditMonthDataModal = ({
     const [investmentData, setInvestmentData] = useState((dataMonthCopy && mode === "editexisting") ? dataMonthCopy.investmentData : null);
     const [isLoading, setisLoading] = useState(false);
     const [currentDate, setCurrentDate] = useState((dataMonthCopy && mode === "editexisting") ? dataMonthCopy.date : null);
-    const [newMonthString, setNewMonthString] = useState((dataMonthCopy && mode === "editexisting") ? new Date(dataMonthCopy.date).toLocaleString("en-us",{month: "long"}) : "");
+    const [newMonthString, setNewMonthString] = useState((dataMonthCopy && mode === "editexisting") ? new Date(dataMonthCopy.date).toLocaleString("th-TH",{month: "long"}) : "");
     const [newYearString, setNewYearString] = useState((dataMonthCopy && mode === "editexisting") ? new Date(dataMonthCopy.date).getFullYear() : "");
     const [isUseSameData, setIsUseSameData] = useState(false);
 
@@ -311,7 +327,7 @@ const EditMonthDataModal = ({
             setInvestmentData(dataMonthCopy.investmentData);
             setNewYearString(new Date(dataMonthCopy.date).getFullYear());
             setNewMonthString(
-                new Date(dataMonthCopy.date).toLocaleString("en-us", {
+                new Date(dataMonthCopy.date).toLocaleString("th-TH", {
                     month: "long",
                 })
             );
@@ -333,7 +349,7 @@ const EditMonthDataModal = ({
             setNewMonthString(
                 new Date(
                     new Date().setMonth(currentYearData.data.length)
-                ).toLocaleString("en-us", {
+                ).toLocaleString("th-TH", {
                     month: "long",
                 })
             );
@@ -345,7 +361,7 @@ const EditMonthDataModal = ({
             setInvestmentData(dataMonthCopy.investmentData);
             setNewYearString(new Date(dataMonthCopy.date).getFullYear());
             setNewMonthString(
-                new Date(dataMonthCopy.date).toLocaleString("en-us", {
+                new Date(dataMonthCopy.date).toLocaleString("th-TH", {
                     month: "long",
                 })
             );
@@ -413,11 +429,11 @@ const EditMonthDataModal = ({
             <Modal.Header closeButton>
                 {mode === "editexisting" ? (
                     <Modal.Title>
-                        Editing {newMonthString} of {newYearString}
+                        แก้ไขเดือน {newMonthString} ปี {newYearString}
                     </Modal.Title>
                 ) : currentYearData ? (
                     <Modal.Title>
-                        Adding {newMonthString} of {newYearString}
+                        เพิ่มเดือน {newMonthString} ปี {newYearString}
                     </Modal.Title>
                 ) : null}
             </Modal.Header>
@@ -446,7 +462,7 @@ const EditMonthDataModal = ({
                                         userSelect: "none",
                                     }}
                                 >
-                                    Income
+                                    รายรับ
                                 </Typography>
                                 <Typography
                                     variant="h8"
@@ -457,7 +473,7 @@ const EditMonthDataModal = ({
                                         userSelect: "none",
                                     }}
                                 >
-                                    Add/Edit Source of Income
+                                    เพิ่ม/แก้ไข แหล่งรายได้
                                 </Typography>
                             </div>
                             <Container>
@@ -549,7 +565,7 @@ const EditMonthDataModal = ({
                                     paddingBottom: "8px",
                                 }}
                             >
-                                Investment
+                                เงินลงทุน
                             </Typography>
                             <Typography
                                 variant="h8"
@@ -559,7 +575,7 @@ const EditMonthDataModal = ({
                                     width: "100%",
                                 }}
                             >
-                                Add Investment Amount
+                                เพิ่มจำนวนเงินลงทุนเดือนนี้
                             </Typography>
                             <Container>
                                 <Grid container spacing={2} alignItems="center">
@@ -595,7 +611,7 @@ const EditMonthDataModal = ({
                                         paddingBottom: "8px",
                                     }}
                                 >
-                                    Expense
+                                    รายจ่าย
                                 </Typography>
                                 <Typography
                                     variant="h8"
@@ -605,7 +621,7 @@ const EditMonthDataModal = ({
                                         width: "100%",
                                     }}
                                 >
-                                    Add/Edit Your Personal Expense
+                                    เพิ่ม/แก้ไข รายจ่ายเดือนนี้
                                 </Typography>
                                 <Container>
                                     {expenseData.length > 0 ? (

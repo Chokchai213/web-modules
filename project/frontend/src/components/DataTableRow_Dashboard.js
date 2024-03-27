@@ -13,6 +13,7 @@ import EditMonthDataModal from "./EditMonthDataModal_Dashboard";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "react-bootstrap/Button";
 import { Modal } from "react-bootstrap";
+import { formatNumberWithCommas, roundNumber } from "utils/numberUtil";
 import axios from "axios";
 
 const baseURL = "http://localhost:8000";
@@ -109,63 +110,81 @@ const taxableIncome = [
 
 const expenseType = [
     {
-        name: "รายจ่าย tmp 1",
+        name: "อาหาร",
         category: 1,
+        color: "#95c2dc",
+        index: 1
     },
     {
-        name: "รายจ่าย tmp 2",
+        name: "ที่พักอาศัย",
         category: 2,
+        color: "#ec843e",
+        index: 2
     },
     {
-        name: "รายจ่าย tmp 3",
+        name: "สิ่งบันเทิง",
         category: 3,
+        color: "#e7dc8c",
+        index: 3
     },
     {
-        name: "รายจ่าย tmp 4",
+        name: "ท่องเที่ยว",
         category: 4,
+        color: "#84ceb9",
+        index: 4
     },
     {
-        name: "รายจ่าย tmp 5",
+        name: "การศึกษา",
         category: 5,
+        color: "#6681a5",
+        index: 5
     },
     {
-        name: "รายจ่าย tmp 6",
+        name: "ค่าเดินทาง",
         category: 6,
+        color: "#fb7d7e",
+        index: 6
     },
     {
-        name: "รายจ่าย tmp 7",
+        name: "ค่าใช้จ่ายจิปาถะ",
         category: 7,
+        color: "#485ea1",
+        index: 7
     },
     {
         name: "อื่นๆ",
         category: 8,
+        color: "#b7f1a5",
+        index: 8
     },
 ];
 
-async function deleteCurrentMonthData(dataMonth, userData, setUserData, userStore) {
+async function deleteCurrentMonthData(
+    dataMonth,
+    userData,
+    setUserData,
+    userStore
+) {
     await axios.post(
         `${baseURL}/db/delete_monthly`,
         {
             month: dataMonth.month,
-            year: dataMonth.year
+            year: dataMonth.year,
         },
         {
             headers: {
                 Authorization: userStore.userToken,
-                UserId: userStore.userId
-            },
-        }
-    )
-    const resFetchNewData = await axios.get(
-        `${baseURL}/db/userdata_dashboard`,
-        {
-            headers: {
-                Authorization: userStore.userToken,
-                userId: userStore.userId,
-                year: dataMonth.year
+                UserId: userStore.userId,
             },
         }
     );
+    const resFetchNewData = await axios.get(`${baseURL}/db/userdata_dashboard`, {
+        headers: {
+            Authorization: userStore.userToken,
+            userId: userStore.userId,
+            year: dataMonth.year,
+        },
+    });
     modifyUserDataByYear(
         dataMonth.year,
         resFetchNewData.data.queryResult,
@@ -209,13 +228,13 @@ export const DataTableRow = ({
     };
 
     const handleDeleteCurrentMonth = async (e) => {
-        await deleteCurrentMonthData(dataMonth, userData, setUserData, userStore)
-        setOpenDeleteModal(false)
-    }
+        await deleteCurrentMonthData(dataMonth, userData, setUserData, userStore);
+        setOpenDeleteModal(false);
+    };
     return (
         <React.Fragment>
-            <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-                <TableCell>
+            <TableRow sx={{ "& > *": { borderBottom: "none" } }}>
+                <TableCell >
                     <IconButton
                         aria-label="expand row"
                         size="small"
@@ -233,26 +252,26 @@ export const DataTableRow = ({
                     ></IconButton>
                 </TableCell>
                 <TableCell component="th" scope="row">
-                    {new Date(dataMonth.date).toLocaleString("en-us", {
+                    {new Date(dataMonth.date).toLocaleString("th-TH", {
                         month: "long",
                     })}
                 </TableCell>
                 <TableCell align="center">
-                    {dataMonth.incomeData.reduce(
+                    {formatNumberWithCommas(dataMonth.incomeData.reduce(
                         (sum, current) => parseFloat(sum) + parseFloat(current.amount),
                         tmp
-                    )}
+                    ))}
                 </TableCell>
                 <TableCell align="center">
-                    {dataMonth.expenseData.reduce(
+                    {formatNumberWithCommas(dataMonth.expenseData.reduce(
                         (sum, current) => parseFloat(sum) + parseFloat(current.amount),
                         tmp
-                    )}
+                    ))}
                 </TableCell>
-                <TableCell align="center">{dataMonth.investmentData}</TableCell>
+                <TableCell align="center">{formatNumberWithCommas(dataMonth.investmentData)}</TableCell>
 
                 {/* delete button */}
-                <TableCell align="center">
+                <TableCell align="center" sx={{ borderBottom: "inherit"}}>
                     <>
                         {isDeleteActive ? (
                             <IconButton
@@ -268,14 +287,15 @@ export const DataTableRow = ({
                 </TableCell>
             </TableRow>
             <TableRow>
-                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box sx={{ margin: 1 }}>
                             <div style={{ display: "flex" }}>
                                 {/* Sub Table Income, Investment, Expense */}
                                 <Table className="sub-table">
-                                    <TableHead >
-                                        <TableRow >
+                                    <TableHead
+                                    >
+                                        <TableRow>
                                             <TableCell
                                                 align="center"
                                                 colSpan={3}
@@ -284,36 +304,61 @@ export const DataTableRow = ({
                                                     backgroundColor: "#CBFFA9",
                                                 }}
                                             >
-                                                Income
+                                                รายรับเดือนนี้
                                             </TableCell>
                                         </TableRow>
-                                        <TableRow key={"sub-table-header-"+dataMonth.date}>
-                                            <TableCell align="center" key={"header-amount-"+dataMonth.date}>Amount</TableCell>
-                                            <TableCell align="center" key={"header-type-"+dataMonth.date}>Type</TableCell>
-                                            <TableCell align="center" key={"header-subtype-"+dataMonth.date}>Subtype</TableCell>
+                                        <TableRow key={"sub-table-header-" + dataMonth.date}>
+                                            <TableCell
+                                                align="center"
+                                                key={"header-amount-" + dataMonth.date}
+                                            >
+                                                จำนวน&nbsp;(บาท)
+                                            </TableCell>
+                                            <TableCell
+                                                align="center"
+                                                key={"header-type-" + dataMonth.date}
+                                            >
+                                                ประเภท
+                                            </TableCell>
+                                            <TableCell
+                                                align="center"
+                                                key={"header-subtype-" + dataMonth.date}
+                                            >
+                                                ประเภทย่อย
+                                            </TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         {dataMonth.incomeData.map((item, index) => (
                                             <TableRow>
-                                                <TableCell key={item.amount + index + "-income-" + selectedYear} align="center">
-                                                    {item.amount}
+                                                <TableCell
+                                                    key={item.amount + index + "-income-" + selectedYear}
+                                                    align="center"
+                                                >
+                                                    {formatNumberWithCommas(item.amount)}
                                                 </TableCell>
-                                                <TableCell key={item.type + index + "-income-type-" + selectedYear} align="center">
+                                                <TableCell
+                                                    key={
+                                                        item.type + index + "-income-type-" + selectedYear
+                                                    }
+                                                    align="center"
+                                                >
                                                     {item.type}
                                                 </TableCell>
                                                 <TableCell
                                                     key={item.amount + Math.random(10, 10)}
                                                     align="center"
                                                 >
-                                                    null
+                                                    -
                                                 </TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
                                 </Table>
                                 <Table className="sub-table">
-                                    <TableHead>
+                                    <TableHead
+                                       
+                                    >
                                         <TableRow>
                                             <TableCell
                                                 align="center"
@@ -323,51 +368,32 @@ export const DataTableRow = ({
                                                     backgroundColor: "#FF9B9B",
                                                 }}
                                             >
-                                                Expense
+                                                รายจ่ายเดือนนี้
                                             </TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell align="center">Amount</TableCell>
-                                            <TableCell align="center">Type</TableCell>
+                                            <TableCell align="center">จำนวน&nbsp;(บาท)</TableCell>
+                                            <TableCell align="center">ประเภท</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         {dataMonth.expenseData.map((item, index) => (
                                             <TableRow>
-                                                <TableCell key={item.amount + index + dataMonth.date} align="center">
-                                                    {item.amount}
+                                                <TableCell
+                                                    key={item.amount + index + dataMonth.date}
+                                                    align="center"
+                                                >
+                                                    {formatNumberWithCommas(item.amount)}
                                                 </TableCell>
-                                                <TableCell key={item.type + index + dataMonth.date} align="center">
+                                                <TableCell
+                                                    key={item.type + index + dataMonth.date}
+                                                    align="center"
+                                                >
                                                     {item.type}
                                                 </TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
-                                </Table>
-                                <Table className="sub-table">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell
-                                                align="center"
-                                                colSpan={2}
-                                                style={{ fontSize: "12pt" }}
-                                                sx={{
-                                                    backgroundColor: "#FFFEC4",
-                                                }}
-                                            >
-                                                Investment
-                                            </TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell align="center" key={Math.random(10, 10)}>
-                                                Amount
-                                            </TableCell>
-                                            <TableCell align="center" key={Math.random(10, 10)}>
-                                                Unit
-                                            </TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody></TableBody>
                                 </Table>
                             </div>
                         </Box>
@@ -385,9 +411,7 @@ export const DataTableRow = ({
             ></EditMonthDataModal>
             <Modal show={openDeleteModal} backdrop="static">
                 <Modal.Header closeButton onHide={handleCloseDeleteModal}>
-                    <Modal.Title>
-                        Deleting
-                    </Modal.Title>
+                    <Modal.Title>Deleting</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     Are you sure you want to delete {dataMonth.date}
@@ -396,7 +420,7 @@ export const DataTableRow = ({
                     <Button
                         variant="primary"
                         onClick={(e) => {
-                            handleCloseDeleteModal()
+                            handleCloseDeleteModal();
                         }}
                     >
                         No
@@ -404,7 +428,7 @@ export const DataTableRow = ({
                     <Button
                         variant="secondary"
                         onClick={(e) => {
-                            handleDeleteCurrentMonth()
+                            handleDeleteCurrentMonth();
                         }}
                     >
                         Yes
