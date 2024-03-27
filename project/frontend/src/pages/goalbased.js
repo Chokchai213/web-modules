@@ -55,6 +55,7 @@ export const GoalBased = () => {
         await axios
           .get(`http://localhost:8000/db/user_risk_profile=${uid}`)
           .then((response) => {
+            console.log(response.data)
             riskProfileTemp = response.data
           });
         setIsloading(false);
@@ -121,7 +122,7 @@ export const GoalBased = () => {
         console.log("Percentage::  ", goalPercent)
         console.log("riskProfile::  ", riskProfile)
         navigate("./normal-goal", {
-          state: { Percentage: goalPercent, goal: oldGoal, riskProfile: riskProfile[0].riskProfile  },
+          state: { Percentage: goalPercent, goal: oldGoal, riskProfile: riskProfile  },
         });
         event.preventDefault();
       } else if (isItNormal == false) {

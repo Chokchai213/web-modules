@@ -119,7 +119,7 @@ function EachCard({ data }) {
                 <CardMedia
                     component="img"
                     sx={{ height:140}}
-                    image={require('./goalPlaceholder.jpg').default}
+                    image="./goalPlaceholder.jpg"
                     alt="icon/image"
                 />
                 <CardContent>
@@ -159,7 +159,7 @@ function EachCard({ data }) {
                 <CardMedia
                     component="img"
                     sx={{ height:140}}
-                    image={require('./goalPlaceholder.jpg').default}
+                    image="./goalPlaceholder.jpg"
                     alt="icon/image"
                 />
                 <CardContent>
