@@ -24,7 +24,7 @@ router.get('/usergoal=:uid', mongoController.getUserGoal);
 
 router.get('/userassets=:uid', mongoController.getUserAsset);
 
-router.post("/upsert_new_goal", mongoController.upsertNewGoal);
+router.post("/upsert_new_goal", mongoController.insertNewGoal);
 
 router.post("/change_goal_percentage", mongoController.changeMultipleGoalPercentage);
 
@@ -34,5 +34,11 @@ router.get("/get_user_goal", mongoController.getUserGoalGoalBased);
 router.post('/stop_goal', mongoController.stopGoal);
 
 router.post('/delete_goal', mongoController.deleteGoal);
+
+router.get("/user_risk_profile=:uid", mongoController.getUserRiskProfile)
+
+router.post("/upsert_risk_profile=:uid", mongoController.upsertRiskProfile)
+
+router.post('/post_asset_from_goal', mongoController.postAssetFromGoal)
 
 module.exports = router;
