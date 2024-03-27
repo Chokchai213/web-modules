@@ -30,7 +30,7 @@ const warnTooltip = styled(({ className, ...props }) => (
 
 export const GoalBased = () => {
     const navigate = useNavigate();
-
+  const [riskProfile,setRiskProfile] = React.useState("");
   const uid = useSelector((state) => state.userStore.userId);
   const [data, setData] = React.useState([]);
   const [goal, setGoal] = React.useState([]);
