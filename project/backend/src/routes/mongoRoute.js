@@ -31,6 +31,9 @@ router.post("/change_goal_percentage", mongoController.changeMultipleGoalPercent
 router.get("/get_user_asset", mongoController.getUserAssetGoalBased);
 
 router.get("/get_user_goal", mongoController.getUserGoalGoalBased);
+router.post('/stop_goal', mongoController.stopGoal);
+
+router.post('/delete_goal', mongoController.deleteGoal);
 
 router.get("/user_risk_profile=:uid", mongoController.getUserRiskProfile)
 
