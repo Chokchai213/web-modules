@@ -149,11 +149,7 @@ export const Graph = (data) => {
     );
   }
 
-  async function createRecommend(riskProfile, userStore) {
-    await axios
-    .get(`http://localhost:8000/db/user_risk_profile=${userStore.userId}`).then(res => {
-      console.log('res :: ',res)
-    })
+  function createRecommend(riskProfile) {
     switch (riskProfile) {
       case "low":
         return (
@@ -228,9 +224,9 @@ export const Graph = (data) => {
                 }}
               >
                 เงินฝาก{" "}
-                {formatNumberWithCommas(parseFloat(UserInvestAmount) * 0.6)} บาท
+                {formatNumberWithCommas(parseFloat(UserInvestAmount) * 0.6,2)} บาท
                 | กองทุนรวม{" "}
-                {formatNumberWithCommas(parseFloat(UserInvestAmount) * 0.4)} บาท
+                {formatNumberWithCommas(parseFloat(UserInvestAmount) * 0.4,2)} บาท
               </div>
             </Box>
           </ContainerMui>
@@ -553,7 +549,6 @@ export const Graph = (data) => {
         );
         break;
       default:
-        return(<></>)
         break;
     }
   }
@@ -889,7 +884,8 @@ export const Graph = (data) => {
                 sx={{ textAlign: "center" }}
               >
                 เงินลงทุนที่แนะนำ{" "}
-                {formatNumberWithCommas(Math.round(minInvest))} บาทต่อเดือน
+                {console.log('minInvest :: ',minInvest)}
+                {formatNumberWithCommas(minInvest,2)} บาทต่อเดือน
               </Typography>
               {isLoading ? (
                 <LineChart
@@ -941,7 +937,7 @@ export const Graph = (data) => {
                   sx={{ textAlign: "center" }}
                 >
                   เงินลงทุนขั้นต่ำต่อเดือน{" "}
-                  {formatNumberWithCommas(Math.round(UserInvestAmountFix))} บาท
+                  {formatNumberWithCommas(UserInvestAmountFix,2)} บาท
                 </Typography>
               </div>
               <div>
@@ -1229,6 +1225,7 @@ export const Graph = (data) => {
                     <Button variant="contained">Create Goal</Button>
                   </IconButton>
                 </form>
+
               </Container>
             </Box>
             <Box
@@ -1246,7 +1243,7 @@ export const Graph = (data) => {
                 marginTop: "1vh",
               }}
             >
-              {createRecommend(userStore)}
+              {createRecommend(memoizedData.data.riskProfile)}
             </Box>
           </ContainerMui>
         </Grid>
@@ -1306,7 +1303,7 @@ export const Graph = (data) => {
                       <Typography>{item.proj_name_th}</Typography>
                       <Typography>{item.proj_name_en}</Typography>
                       <Typography>
-                        อัตราการเติบโต : {formatNumberWithCommas(item.growthrat_lastmonth)} %
+                        อัตราการเติบโต : {formatNumberWithCommas(item.growthrat_lastmonth,2)} %
                       </Typography>
                       <div style={{ position: "absolute", right: 0, top: 0 }}>
                         <Tooltip title="ข้อมูลกองทุน" placement="right">
