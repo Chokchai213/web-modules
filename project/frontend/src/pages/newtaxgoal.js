@@ -96,7 +96,7 @@ export function NewTaxGoal() {
         setTotalReduce(sumAll);
         if (Number(insurance2 || 0) + Number(insurance3 || 0) > 100000) { setWarning1(true) } else { setWarning1(false) };
         if (Number(insurance5 || 0) + Number(insurance6 || 0) + Number(insurance7 || 0) + Number(insurance9 || 0) > 500000) { setWarning2(true) } else { setWarning2(false) };
-    }, [fund, personal, insurance, charity, personal1, personal2, personal3, personal4, personal5, personal6, insurance1, insurance2, insurance3, insurance4, insurance5, insurance6, insurance7, insurance8, insurance9, charities]
+    }, [personal, insurance, charity, personal1, personal2, personal3, personal4, personal5, personal6, insurance1, insurance2, insurance3, insurance4, insurance5, insurance6, insurance7, insurance8, insurance9, charities]
     );
 
     // Helper function to create a deep copy of an object
@@ -243,15 +243,14 @@ export function NewTaxGoal() {
         <React.Fragment>
             <Navigate />
             {isloading == false &&
-                (<div style={{ display: 'flex', marginTop: 30, flexDirection: 'column', alignItems: 'center' }}>
-                    <Typography marginBottom={2} fontWeight={'bold'}>การคำนวนเงินได้สุทธิเพื่อนำไปคำนวนภาษี</Typography>
+                (<div style={{ display: 'flex', marginTop: 20, flexDirection: 'column', alignItems: 'center' }}>
                     <TableContainer component={Paper} sx={{ width: '50%' }}>
                         <Table aria-label="collapsible table">
                             <TableHead>
-                                <TableRow style={{ backgroundColor: "#0d5415" }}>
+                                <TableRow>
                                     <TableCell />
                                     <TableCell />
-                                    <TableCell align="center" style={{ fontWeight: "bold", color: 'white' }}>จำนวนเงิน (บาท)</TableCell>
+                                    <TableCell align="center" style={{ fontWeight: "bold" }}>จำนวนเงิน (บาท)</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -310,7 +309,7 @@ export function NewTaxGoal() {
                                         {totalReduce.toLocaleString("en-GB")}
                                     </TableCell>
                                 </TableRow>
-                                <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+                                <TableRow >
                                     <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={3}>
                                         <Collapse in={open2} timeout="auto" unmountOnExit>
 
@@ -817,41 +816,48 @@ export function NewTaxGoal() {
                         </Table>
                     </TableContainer>
 
-                    <Container style={{ display: 'flex', width: '50%', marginTop: 20, justifyContent: 'space-between' }}>
-                        <Typography variant="subtitile1" style={{ fontSize: 17 }}>
-                            เงินได้สุทธิ
-                        </Typography>
-                        <Typography variant="subtitile1" style={{ fontSize: 17 }}>
-                            {(incomeSum - benefitSum - personal - insurance - charity - fund) < 0 ? 0 : (incomeSum - benefitSum - personal - insurance - charity - fund).toLocaleString("en-GB")} บาท
-                        </Typography>
-                    </Container>
-
-                    {(warning1 == true || warning2 == true || incomeSum - benefitSum - personal - insurance - charity - fund <= 150000) ?
-                        <Container style={{ display: 'flex', width: '50%', marginTop: 5, marginBottom: 20, justifyContent: 'right', alignItems: 'center' }}>
-                            <Tooltip title="เงินได้ของคุณอยู่ในเกณฑ์ที่ไม่ต้องเสียภาษี" arrow placement='right'>
-                                <IconButton >
-                                    <StartIcon color='error' />
-                                </IconButton>
-                            </Tooltip>
+                    {!(incomeSum - benefitSum - personal - insurance - charity < 0) ?
+                        <Container style={{ display: 'flex', width: '50%', marginTop: 20, justifyContent: 'space-between' }}>
+                            <Typography variant="subtitile1" style={{ fontSize: 17 }}>
+                                เงินได้สุทธิ
+                            </Typography>
+                            <Typography variant="subtitile1" style={{ fontSize: 17 }}>
+                                {(incomeSum - benefitSum - personal - insurance - charity - fund).toLocaleString("en-GB")} บาท
+                            </Typography>
                         </Container>
                         :
-                        <Container style={{ display: 'flex', width: '50%', marginTop: 5, marginBottom: 20, justifyContent: 'right', flexDirection: 'row', alignItems: 'center' }}>
-                            <Tooltip title="ต่อไป" arrow placement='right'>
-                                <Link
-                                    state={{
-                                        netIncome: incomeSum - benefitSum - personal - insurance - charity - fund,
-                                        beforeReduction: incomeSum - benefitSum,
-                                        Percentage: Percentage,
-                                        oldGoal: oldGoal
-                                    }}
-                                    to={"./select-fund"}
-                                    style={{ textDecoration: "none", color: "black" }}
-                                >
-                                    <IconButton>
-                                        <StartIcon color='action' />
-                                    </IconButton>
-                                </Link>
-                            </Tooltip>
+                        <Container style={{ display: 'flex', width: '50%', marginTop: 20, justifyContent: 'space-between' }}>
+                            <Typography variant="subtitile1" style={{ fontSize: 17, color: 'red' }}>
+                                เงินได้สุทธิ
+                            </Typography>
+                            <Typography variant="subtitile1" style={{ fontSize: 17, color: 'red' }}>
+                                {(incomeSum - benefitSum - personal - insurance - charity - fund).toLocaleString("en-GB")} บาท
+                            </Typography>
+                        </Container>
+                    }
+
+                    {(warning1 == true || warning2 == true || incomeSum - benefitSum - personal - insurance - charity - fund < 0) ?
+                        <Container style={{ display: 'flex', width: '50%', marginTop: 5, marginBottom: 20, justifyContent: 'right', alignItems: 'center' }}>
+                            <IconButton disabled={true}>
+                                <StartIcon color='error' />
+                            </IconButton>
+                        </Container>
+                        :
+                        <Container style={{ display: 'flex', width: '50%', marginTop: 5, marginBottom: 20, justifyContent: 'right', alignItems: 'center' }}>
+                            <Link
+                                state={{
+                                    netIncome: incomeSum - benefitSum - personal - insurance - charity - fund,
+                                    beforeReduction: incomeSum - benefitSum,
+                                    Percentage: Percentage,
+                                    oldGoal: oldGoal
+                                }}
+                                to={"./select-fund"}
+                                style={{ textDecoration: "none", color: "white" }}
+                            >
+                                <IconButton>
+                                    <StartIcon color='action' />
+                                </IconButton>
+                            </Link>
                         </Container>
                     }
                 </div>)}

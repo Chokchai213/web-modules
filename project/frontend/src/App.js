@@ -13,7 +13,6 @@ import { NormalGoal } from "pages/normalGoal";
 import { GoalFirst } from "pages/normalGoalFirst";
 import { RiskEvalNormalPage } from "pages/riskEvalNormal";
 import { useState } from "react";
-import { TaxCal } from "pages/taxCalcuation";
 
 const baseURL = "http://localhost:8000";
 function RequireAuth({ children, redirectTo }) {
@@ -91,10 +90,6 @@ function App() {
         <Route
           path="/Goal-Based/reduce-tax-goal/select-fund"
           element={<SelectFund />}
-        />
-        <Route
-          path="/tax-calculation"
-          element={<RequireAuth redirectTo="/">{<TaxCal />}</RequireAuth>}
         />
       </Routes>
     </BrowserRouter>

@@ -13,7 +13,6 @@ import EditMonthDataModal from "./EditMonthDataModal_Dashboard";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "react-bootstrap/Button";
 import { Modal } from "react-bootstrap";
-import { formatNumberWithCommas, roundNumber } from "utils/numberUtil";
 import axios from "axios";
 
 const baseURL = "http://localhost:8000";
@@ -252,23 +251,23 @@ export const DataTableRow = ({
                     ></IconButton>
                 </TableCell>
                 <TableCell component="th" scope="row">
-                    {new Date(dataMonth.date).toLocaleString("th-TH", {
+                    {new Date(dataMonth.date).toLocaleString("en-us", {
                         month: "long",
                     })}
                 </TableCell>
                 <TableCell align="center">
-                    {formatNumberWithCommas(dataMonth.incomeData.reduce(
+                    {dataMonth.incomeData.reduce(
                         (sum, current) => parseFloat(sum) + parseFloat(current.amount),
                         tmp
-                    ))}
+                    )}
                 </TableCell>
                 <TableCell align="center">
-                    {formatNumberWithCommas(dataMonth.expenseData.reduce(
+                    {dataMonth.expenseData.reduce(
                         (sum, current) => parseFloat(sum) + parseFloat(current.amount),
                         tmp
-                    ))}
+                    )}
                 </TableCell>
-                <TableCell align="center">{formatNumberWithCommas(dataMonth.investmentData)}</TableCell>
+                <TableCell align="center">{dataMonth.investmentData}</TableCell>
 
                 {/* delete button */}
                 <TableCell align="center" sx={{ borderBottom: "inherit"}}>
@@ -304,7 +303,7 @@ export const DataTableRow = ({
                                                     backgroundColor: "#CBFFA9",
                                                 }}
                                             >
-                                                รายรับเดือนนี้
+                                                Income
                                             </TableCell>
                                         </TableRow>
                                         <TableRow key={"sub-table-header-" + dataMonth.date}>
@@ -312,19 +311,19 @@ export const DataTableRow = ({
                                                 align="center"
                                                 key={"header-amount-" + dataMonth.date}
                                             >
-                                                จำนวน&nbsp;(บาท)
+                                                Amount
                                             </TableCell>
                                             <TableCell
                                                 align="center"
                                                 key={"header-type-" + dataMonth.date}
                                             >
-                                                ประเภท
+                                                Type
                                             </TableCell>
                                             <TableCell
                                                 align="center"
                                                 key={"header-subtype-" + dataMonth.date}
                                             >
-                                                ประเภทย่อย
+                                                Subtype
                                             </TableCell>
                                         </TableRow>
                                     </TableHead>
@@ -335,7 +334,7 @@ export const DataTableRow = ({
                                                     key={item.amount + index + "-income-" + selectedYear}
                                                     align="center"
                                                 >
-                                                    {formatNumberWithCommas(item.amount)}
+                                                    {item.amount}
                                                 </TableCell>
                                                 <TableCell
                                                     key={
@@ -349,7 +348,7 @@ export const DataTableRow = ({
                                                     key={item.amount + Math.random(10, 10)}
                                                     align="center"
                                                 >
-                                                    -
+                                                    null
                                                 </TableCell>
                                             </TableRow>
                                         ))}
@@ -368,12 +367,12 @@ export const DataTableRow = ({
                                                     backgroundColor: "#FF9B9B",
                                                 }}
                                             >
-                                                รายจ่ายเดือนนี้
+                                                Expense
                                             </TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell align="center">จำนวน&nbsp;(บาท)</TableCell>
-                                            <TableCell align="center">ประเภท</TableCell>
+                                            <TableCell align="center">Amount</TableCell>
+                                            <TableCell align="center">Type</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -383,7 +382,7 @@ export const DataTableRow = ({
                                                     key={item.amount + index + dataMonth.date}
                                                     align="center"
                                                 >
-                                                    {formatNumberWithCommas(item.amount)}
+                                                    {item.amount}
                                                 </TableCell>
                                                 <TableCell
                                                     key={item.type + index + dataMonth.date}
@@ -395,6 +394,37 @@ export const DataTableRow = ({
                                         ))}
                                     </TableBody>
                                 </Table>
+                                {/* <Table className="sub-table">
+                                    <TableHead
+                                        sx={{
+                                            "& th": {
+                                                borderStyle: "hidden !important",
+                                            },
+                                        }}
+                                    >
+                                        <TableRow>
+                                            <TableCell
+                                                align="center"
+                                                colSpan={2}
+                                                style={{ fontSize: "12pt" }}
+                                                sx={{
+                                                    backgroundColor: "#FFFEC4",
+                                                }}
+                                            >
+                                                Investment
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell align="center" key={Math.random(10, 10)}>
+                                                Amount
+                                            </TableCell>
+                                            <TableCell align="center" key={Math.random(10, 10)}>
+                                                Unit
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody></TableBody>
+                                </Table> */}
                             </div>
                         </Box>
                     </Collapse>
