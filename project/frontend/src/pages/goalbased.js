@@ -16,7 +16,8 @@ import { useNavigate } from "react-router-dom";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 import { AssetSummary } from "components/AssetSummary_GoalBased";
-import CircularProgress from '@mui/joy/CircularProgress';
+import CircularProgress from "@mui/joy/CircularProgress";
+import { set } from "store";
 
 const warnTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -37,15 +38,15 @@ export const GoalBased = () => {
     const [data, setData] = React.useState([]);
     const [goal, setGoal] = React.useState([]);
     const [isloading, setIsloading] = React.useState(true);
-    const [needAllocate, setNeedAllocate] = React.useState(false)
-  const [riskProfile, setRiskProfile] = React.useState('');
+    const [needAllocate, setNeedAllocate] = React.useState(false);
+    const [riskProfile, setRiskProfile] = React.useState("");
     const [isItNormal, setIsitNormal] = React.useState();
 
     React.useEffect(() => {
         async function fetchData() {
             if (uid != null) {
                 let riskProfileTemp;
-        await axios
+                await axios
                     .get(`http://localhost:8000/db/userdata=${uid}`)
                     .then((response) => {
                         setData(response.data);
@@ -55,39 +56,42 @@ export const GoalBased = () => {
                     .then((res) => {
                         setGoal(res.data);
                         if (res.data.length > 0) {
-                            const sumPercent =
-                                res.data.reduce(
-                                    (acc, current) => acc + Number(current.Percentage || 0),
-                                    0
-                                );
+                            const sumPercent = res.data.reduce(
+                                (acc, current) => acc + Number(current.Percentage || 0),
+                                0
+                            );
                             if (sumPercent != 100) {
-                                setNeedAllocate(true)
+                                setNeedAllocate(true);
                             } else {
-                                setNeedAllocate(false)
+                                setNeedAllocate(false);
                             }
                         }
                     });
-                await axios
-          .get(`http://localhost:8000/db/user_risk_profile=${uid}`)
-          .then((response) => {
-            riskProfileTemp = response.data[0].riskProfile
-          });
-        setIsloading(false);
-                console.log(needAllocate)
-                if (needAllocate == true) { handleOpenEditGoal() }
-              if (riskProfileTemp.length > 0) {
-          //true = has risk_profile
-          // do nothing
-          setRiskProfile(riskProfileTemp)
-        } else {
-          navigate("./risk-evaluation-normal");
-        }
-      }
+                const riskProfileRes = await axios
+                    .get(`http://localhost:8000/db/user_risk_profile=${uid}`)
+
+                    if(riskProfileRes.data.length > 0){
+                        riskProfileTemp = riskProfileRes.data[0].riskProfile;
+                        setRiskProfile(riskProfileTemp)
+                    }else{
+                        setIsloading(false);
+                        navigate("./risk-evaluation-normal");
+                    }
+                console.log(needAllocate);
+                if (needAllocate === true) {
+                    handleOpenEditGoal();
+                }
+                // if (riskProfileTemp.length > 0) {
+                //     //true = has risk_profile
+                //     // do nothing
+                //     setRiskProfile(riskProfileTemp);
+                // } else {
+                //     navigate("./risk-evaluation-normal");
+                // }
+            }
         }
         fetchData();
     }, [uid, needAllocate]);
-
-
 
     function handleGoalTypeClick(type) {
         if (type == "normal") {
@@ -96,18 +100,18 @@ export const GoalBased = () => {
             setIsitNormal(false);
         }
 
-    if (goal.length > 0) {
-      handleOpenNewGoal();
-    } else {
-      if (type == "normal") {
-        navigate("./normal-goal", { state: { Percentage: 100 } });
-      } else if (type == "tax") {
-        navigate("./reduce-tax-goal", {
-          state: { Percentage: 100, data: data },
-        });
-      }
+        if (goal.length > 0) {
+            handleOpenNewGoal();
+        } else {
+            if (type == "normal") {
+                navigate("./normal-goal", { state: { Percentage: 100 } });
+            } else if (type == "tax") {
+                navigate("./reduce-tax-goal", {
+                    state: { Percentage: 100, data: data },
+                });
+            }
+        }
     }
-  }
 
     function handleCreateGoal() {
         if (goal.length > 0) {
@@ -135,15 +139,19 @@ export const GoalBased = () => {
         );
 
         function handleSubmit(event) {
-            if (isItNormal == true) {
+            if (isItNormal === true) {
                 handleCloseNewGoal();
-                console.log("Percentage::  ", goalPercent)
-        console.log("riskProfile::  ", riskProfile)
-        navigate("./normal-goal", {
-          state: { Percentage: goalPercent, goal: oldGoal, riskProfile: riskProfile  },
-        });
+                console.log("Percentage::  ", goalPercent);
+                console.log("riskProfile::  ", riskProfile);
+                navigate("./normal-goal", {
+                    state: {
+                        Percentage: goalPercent,
+                        goal: oldGoal,
+                        riskProfile: riskProfile,
+                    },
+                });
                 event.preventDefault();
-            } else if (isItNormal == false) {
+            } else if (isItNormal === false) {
                 handleCloseNewGoal();
                 navigate("./reduce-tax-goal", {
                     state: { Percentage: goalPercent, data: data, oldGoal: oldGoal },
@@ -459,21 +467,20 @@ export const GoalBased = () => {
                 {
                     headers: {
                         Authorization: token,
-                        UserId: uid
+                        UserId: uid,
                     },
                 }
-            )
+            );
             event.preventDefault();
             handleCloseEditGoal();
             window.location.reload(false);
         }
 
         let Exceed = false;
-        const sumPercent =
-            editGoalPercent.reduce(
-                (acc, current) => acc + Number(current.Percentage || 0),
-                0
-            );
+        const sumPercent = editGoalPercent.reduce(
+            (acc, current) => acc + Number(current.Percentage || 0),
+            0
+        );
         if (sumPercent != 100) {
             Exceed = true;
         } else {
@@ -533,7 +540,9 @@ export const GoalBased = () => {
                             variant="subtitile1"
                             fontWeight={"bold"}
                         >
-                            {needAllocate == true ? "จัดสรรสัดส่วนการลงทุนใหม่ :" : "เงินลงทุนในเป้าหมายทั้งหมด :"}
+                            {needAllocate == true
+                                ? "จัดสรรสัดส่วนการลงทุนใหม่ :"
+                                : "เงินลงทุนในเป้าหมายทั้งหมด :"}
                         </Typography>
                         {editGoalPercent.length > 0
                             ? editGoalPercent.map((eachGoal, index) => (
@@ -653,11 +662,18 @@ export const GoalBased = () => {
         );
     };
 
-
     return (
         <React.Fragment>
             <Navigate />
-            <Typography marginBottom={5} marginTop={5} variant="h5" textAlign={"center"} fontWeight={'bold'}>Goal-Based Investment</Typography>
+            <Typography
+                marginBottom={5}
+                marginTop={5}
+                variant="h5"
+                textAlign={"center"}
+                fontWeight={"bold"}
+            >
+                Goal-Based Investment
+            </Typography>
             <Container
                 style={{
                     display: "flex",
@@ -668,9 +684,9 @@ export const GoalBased = () => {
                     maxHeight: 400,
                     overflow: "auto",
                     backgroundColor: "#F0F0F0",
-                    borderStyle: 'solid',
+                    borderStyle: "solid",
                     borderWidth: 1,
-                    borderColor: 'gray',
+                    borderColor: "gray",
                 }}
             >
                 <GoalCard Goal={goal} />
@@ -691,21 +707,19 @@ export const GoalBased = () => {
                             alignItems: "center",
                         }}
                     >
-                        {isloading == false ? <Button
-                            onClick={handleCreateGoal}
-                            sx={{ backgroundColor: "black" }}
-                            size="large"
-                        >
-                            <Typography color="white" variant="subtitile1">
-                                สร้างเป้าหมาย
-                            </Typography>
-                        </Button>
-                            :
-                            <CircularProgress
-                                color="neutral"
-                                value={35}
-                                variant="plain"
-                            />}
+                        {isloading == false ? (
+                            <Button
+                                onClick={handleCreateGoal}
+                                sx={{ backgroundColor: "black" }}
+                                size="large"
+                            >
+                                <Typography color="white" variant="subtitile1">
+                                    สร้างเป้าหมาย
+                                </Typography>
+                            </Button>
+                        ) : (
+                            <CircularProgress color="neutral" value={35} variant="plain" />
+                        )}
                         <ModalCreate
                             openCreate={openCreate}
                             handleCloseCreate={handleCloseCreate}
@@ -714,16 +728,31 @@ export const GoalBased = () => {
                     </CardActions>
                 </Card>
             </Container>
-            {goal.length > 0 ?
-                <Container style={{ display: 'flex', justifyContent: 'right', width: '70%', marginTop: 10 }}>
-                    <Tooltip title='แก้ไสัดส่วนการลงทุน' arrow placement="right">
-                        <Button onClick={handleOpenEditGoal} sx={{ backgroundColor: 'green', color: 'white', fontWeight: 'normal' }}>
+            {goal.length > 0 ? (
+                <Container
+                    style={{
+                        display: "flex",
+                        justifyContent: "right",
+                        width: "70%",
+                        marginTop: 10,
+                    }}
+                >
+                    <Tooltip title="แก้ไสัดส่วนการลงทุน" arrow placement="right">
+                        <Button
+                            onClick={handleOpenEditGoal}
+                            sx={{
+                                backgroundColor: "green",
+                                color: "white",
+                                fontWeight: "normal",
+                            }}
+                        >
                             แก้ไข
                         </Button>
                     </Tooltip>
                     <ModalEditGoal open={openEditGoal} close={handleCloseEditGoal} />
-                </Container> : null}
-                <AssetSummary></AssetSummary>
+                </Container>
+            ) : null}
+            <AssetSummary></AssetSummary>
         </React.Fragment>
     );
 };
