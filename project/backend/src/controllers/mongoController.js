@@ -374,20 +374,6 @@ exports.getUserGoal = async (req, res) => {
   }
 };
 
-exports.getUserRiskProfile = async (req, res) => {
-  const db = client.db(dbName);
-  const collection = db.collection("risk_profile");
-  try {
-    query = { uid: req.params.uid };
-
-    var findResult = await collection.find(query).toArray();
-    console.log(findResult);
-    res.json(findResult);
-  } catch (error) {
-    console.log("Error occured in exports.testUser: ", error);
-    res.status(401).json({ message: error });
-  }
-};
 
 exports.upsertRiskProfile = async (req, res) => {
   const db = client.db(dbName);
