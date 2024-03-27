@@ -405,7 +405,7 @@ exports.getUserRiskProfile = async (req, res) => {
     query = { uid: req.params.uid };
 
     var findResult = await collection.find(query).toArray();
-    console.log(findResult);
+    console.log('findResult :: ',findResult);
     res.json(findResult);
   } catch (error) {
     console.log("Error occured in exports.testUser: ", error);

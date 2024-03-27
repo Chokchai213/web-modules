@@ -149,7 +149,11 @@ export const Graph = (data) => {
     );
   }
 
-  function createRecommend(riskProfile) {
+  async function createRecommend(riskProfile, userStore) {
+    await axios
+    .get(`http://localhost:8000/db/user_risk_profile=${userStore.userId}`).then(res => {
+      console.log('res :: ',res)
+    })
     switch (riskProfile) {
       case "low":
         return (
@@ -549,6 +553,7 @@ export const Graph = (data) => {
         );
         break;
       default:
+        return(<></>)
         break;
     }
   }
@@ -1224,7 +1229,6 @@ export const Graph = (data) => {
                     <Button variant="contained">Create Goal</Button>
                   </IconButton>
                 </form>
-
               </Container>
             </Box>
             <Box
@@ -1242,7 +1246,7 @@ export const Graph = (data) => {
                 marginTop: "1vh",
               }}
             >
-              {createRecommend(memoizedData.data.riskProfile)}
+              {createRecommend(userStore)}
             </Box>
           </ContainerMui>
         </Grid>

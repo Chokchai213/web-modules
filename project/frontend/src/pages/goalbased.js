@@ -71,6 +71,7 @@ export const GoalBased = () => {
 
                     if(riskProfileRes.data.length > 0){
                         riskProfileTemp = riskProfileRes.data[0].riskProfile;
+                        setIsloading(false);
                         setRiskProfile(riskProfileTemp)
                     }else{
                         setIsloading(false);
